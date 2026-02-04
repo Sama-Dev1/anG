@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sama | Sign In</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Space+Grotesk:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="background-glow"></div>
+
+    <header class="glass-header">
+        <nav>
+            <div class="logo"><a href="index.html">Sama<span class="dot">.</span></a></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="auth.html?mode=signin" class="active">Sign In</a></li>
+                <li><a href="auth.html?mode=signup" class="cta-small">Sign Up</a></li>
+            </ul>
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <main class="auth-wrapper">
+        <div class="auth-container fade-in-up">
+            <div class="auth-header">
+                <div class="auth-tab active" style="text-align: center; cursor: default;">Sign In</div>
+            </div>
+
+            <div class="auth-body">
+                <!-- Sign In Form -->
+                <form id="form-signin" class="auth-form active" style="display: block;">
+                    <h2>Welcome Back.</h2>
+                    <p class="auth-desc">Enter your details and name to access your workspace.</p>
+
+                    <div class="input-group">
+                        <input type="text" id="signin-name" required placeholder=" " />
+                        <label for="signin-name">Your Name</label>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="email" id="signin-email" required placeholder=" " />
+                        <label for="signin-email">Email Address</label>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="password" id="signin-pass" required placeholder=" " />
+                        <label for="signin-pass">Password</label>
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="#" class="forgot-pass">Forgot Password?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="main.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+        // valid signup logic would go here if implemented
+    </script>
+</body>
+
+</html>

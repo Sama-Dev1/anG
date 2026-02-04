@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Sama - A platform for developers and creators, made by Saif." />
+    <title>Sama | For Developers & Creators</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Space+Grotesk:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="background-glow"></div>
+
+    <header class="glass-header">
+        <nav>
+            <div class="logo">Sama<span class="dot">.</span></div>
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Work</a></li>
+                <li><a href="#" id="nav-db-link" style="display:none;">Dashboard</a></li>
+                <li><a href="#" class="cta-small">Sign In</a></li>
+                
+            </ul>
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <span class="badge">Made by Saif</span>
+                <h1 class="fade-in-up">Building for <br /><span class="gradient-text">Developers</span> & <span
+                        class="gradient-text-alt">People</span></h1>
+                <p class="fade-in-up delay-1">A digital experience crafted with precision, aesthetics, and performance
+                    in mind.</p>
+                <div class="hero-buttons fade-in-up delay-2">
+                    <a href="auth.html" class="btn btn-primary" id="hero-signin-btn">Sign In</a>
+                    <a href="mailto:n68324755@gmail.com" class="btn btn-secondary">Get in Touch</a>
+                </div>
+            </div>
+            <div class="hero-visual fade-in delay-1">
+                <div class="code-block-wrapper">
+                    <div class="code-header">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                    </div>
+                    <pre><code id="typing-code">
+const labelaasd = {
+  role: "Creator",
+  vision: "Limitless",
+  build: () => {
+    return "Sama";
+  }
+};
+            </code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section id="dashboard" class="dashboard-section" style="display:none; padding: 100px 5%; min-height: 50vh;">
+            <h2 class="section-title">Welcome to your Dashboard</h2>
+            <div class="grid">
+                <div class="glass-card">
+                    <h3>My Projects</h3>
+                    <p>View your active builds.</p>
+                </div>
+                <div class="glass-card">
+                    <h3>Settings</h3>
+                    <p>Manage your account.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="features">
+            <h2 class="section-title">Why Sama?</h2>
+            <div class="grid">
+                <button class="card glass-card feature-btn"
+                    onclick="alert('High Performance feature details coming soon!')">
+                    <div class="icon">🚀</div>
+                    <h3>High Performance</h3>
+                    <p>Optimized for speed and efficiency, ensuring a smooth experience for every user.</p>
+                </button>
+                <button class="card glass-card feature-btn" onclick="alert('Premium Design details!')">
+                    <div class="icon">🎨</div>
+                    <h3>Premium Design</h3>
+                    <p>Aesthetics that inspire. Modern layouts paired with stunning visuals.</p>
+                </button>
+                <button class="card glass-card feature-btn" onclick="alert('Developer tools access granted.')">
+                    <div class="icon">⚡</div>
+                    <h3>Developer Focused</h3>
+                    <p>Tools and resources tailored for potential builders and creators.</p>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="glass-footer">
+        <div class="footer-content">
+            <div class="footer-logo">Sama.</div>
+            <p>&copy; 2026 Sama made by Saif. All rights reserved.</p>
+            <div class="socials">
+                <a href="#">Twitter</a>
+                <a href="#">GitHub</a>
+                <a href="#">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+
+</html>
