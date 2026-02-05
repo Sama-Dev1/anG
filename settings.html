@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sama | Settings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Space+Grotesk:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="background-glow"></div>
+
+    <header class="glass-header">
+        <nav>
+            <div class="logo"><a href="index.html">Sama<span class="dot">.</span></a></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#dashboard">Dashboard</a></li>
+                <li><a href="#" class="active">Settings</a></li>
+            </ul>
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <main class="auth-wrapper">
+        <div class="auth-container fade-in-up">
+            <div class="auth-header">
+                <div class="auth-tab active" style="text-align: center; cursor: default;">Account Settings</div>
+            </div>
+
+            <div class="auth-body">
+                <div class="auth-form active" style="display: block;">
+                    <h2>Your Profile</h2>
+                    <p class="auth-desc">Manage your personal information.</p>
+
+                    <div class="input-group">
+                        <input type="text" id="setting-name" readonly placeholder="" />
+                        <label for="setting-name">Name</label>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="email" id="setting-email" readonly placeholder=" " />
+                        <label for="setting-email">Email Address</label>
+                    </div>
+
+                    <div style="margin-top: 2rem;">
+                        <button id="logout-btn" class="btn btn-primary btn-full"
+                            style="background: transparent; border: 1px solid #ff5f56; color: #ff5f56;">
+                            Sign Out
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="main.js"></script>
+    <script>
+        // Inline script to populate data specific to this page
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('sama_user');
+            if (!savedUser) {
+                // Not logged in, redirect to home
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const userData = JSON.parse(savedUser);
+
+            const nameField = document.getElementById('setting-name');
+            const emailField = document.getElementById('setting-email');
+
+            if (nameField) nameField.value = userData.name || '';
+            if (emailField) emailField.value = userData.email || '';
+
+            // Handle Logout
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('sama_user');
+                    window.location.href = 'index.html';
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

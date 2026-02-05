@@ -21,12 +21,12 @@
         <nav>
             <div class="logo">Sama<span class="dot">.</span></div>
             <ul class="nav-links">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Work</a></li>
-                <li><a href="#" id="nav-db-link" style="display:none;">Dashboard</a></li>
-                <li><a href="#" class="cta-small">Sign In</a></li>
-                
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#work">Work</a></li>
+                <li><a href="#dashboard" id="nav-db-link" style="display:none;">Dashboard</a></li>
+                <li><a href="mailto:n68324755@gmail.com" class="cta-small" id="nav-connect-btn">Connect</a></li>
+
             </ul>
             <div class="menu-toggle" id="mobile-menu">
                 <span class="bar"></span>
@@ -57,7 +57,7 @@
                         <span class="dot green"></span>
                     </div>
                     <pre><code id="typing-code">
-const labelaasd = {
+const label = {
   role: "Creator",
   vision: "Limitless",
   build: () => {
@@ -69,35 +69,54 @@ const labelaasd = {
             </div>
         </section>
 
+        <!-----secondpage------>
+
         <section id="dashboard" class="dashboard-section" style="display:none; padding: 100px 5%; min-height: 50vh;">
             <h2 class="section-title">Welcome to your Dashboard</h2>
             <div class="grid">
                 <div class="glass-card">
-                    <h3>My Projects</h3>
+                    <h3><a href="#work">Start</a></h3>
                     <p>View your active builds.</p>
                 </div>
                 <div class="glass-card">
-                    <h3>Settings</h3>
+                    <h3><a href="settings.html">Settings</a></h3>
                     <p>Manage your account.</p>
                 </div>
             </div>
         </section>
 
-        <section id="about" class="features">
-            <h2 class="section-title">Why Sama?</h2>
+        <section id="work" class="work-section" style="padding: 100px 5%;">
+            <h2 class="section-title">Selected Work</h2>
             <div class="grid">
-                <button class="card glass-card feature-btn"
-                    onclick="alert('High Performance feature details coming soon!')">
+                <div class="glass-card">
+                    <h3>Sama Free</h3>
+                    <p>For a month.</p>
+                </div>
+                <div class="glass-card">
+                    <h3>Sama Pro ($80)</h3>
+                    <p>For a year.</p>
+                </div>
+               <div class="glass-card">
+                    <h3>Sama Pro ($80)</h3>
+                    <p>For a year.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="features">
+            <h2 class="section-title">What is Sama?</h2>
+            <div class="grid">
+                <button class="card glass-card feature-btn">
                     <div class="icon">🚀</div>
                     <h3>High Performance</h3>
                     <p>Optimized for speed and efficiency, ensuring a smooth experience for every user.</p>
                 </button>
-                <button class="card glass-card feature-btn" onclick="alert('Premium Design details!')">
+                <button class="card glass-card feature-btn">
                     <div class="icon">🎨</div>
                     <h3>Premium Design</h3>
                     <p>Aesthetics that inspire. Modern layouts paired with stunning visuals.</p>
                 </button>
-                <button class="card glass-card feature-btn" onclick="alert('Developer tools access granted.')">
+                <button class="card glass-card feature-btn">
                     <div class="icon">⚡</div>
                     <h3>Developer Focused</h3>
                     <p>Tools and resources tailored for potential builders and creators.</p>

@@ -29,6 +29,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (navDbLink) {
             navDbLink.style.display = 'block';
         }
+
+        const connectBtn = document.getElementById('nav-connect-btn');
+        if (connectBtn) {
+            connectBtn.textContent = userData.name || userData.email.split('@')[0];
+            connectBtn.href = '#';
+        }
         // Optional: Hide "Sign In" link in nav if you prefer, or change it to "Logout"
         if (navBtn) {
             navBtn.parentElement.style.display = 'none';
@@ -62,7 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Typing Effect
     const codeElement = document.getElementById('typing-code');
-    const codeText = `const label = {
+    if (codeElement) {
+        const codeText = `const label = {
   role: "Creator",
   vision: "Limitless",
   build: () => {
@@ -70,31 +77,39 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 };`;
 
-    // Clear initial content
-    codeElement.innerText = '';
+        // Clear initial content
+        codeElement.innerText = '';
 
-    let i = 0;
-    function typeWriter() {
-        if (i < codeText.length) {
-            codeElement.innerText += codeText.charAt(i);
-            i++;
-            setTimeout(typeWriter, 50);
+        let i = 0;
+        function typeWriter() {
+            if (i < codeText.length) {
+                codeElement.innerText += codeText.charAt(i);
+                console.log(codeText.charAt(i));
+                i++;
+                setTimeout(typeWriter, 50);
+            }
         }
+
+        // Start typing after a delay
+        setTimeout(typeWriter, 1000);
     }
 
-    // Start typing after a delay
-    setTimeout(typeWriter, 1000);
-
-    // Smooth Scrolling
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
+    // Smooth Scrolling (Refined with Event Delegation)
+    document.addEventListener('click', function (e) {
+        const anchor = e.target.closest('a[href^="#"]');
+        if (anchor) {
             e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
-    });
+            const targetId = anchor.getAttribute('href');
+            if (targetId === '#' || !targetId) return;
 
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        }
+    });
     // Mobile Menu Toggle (Basic)
     const menuToggle = document.getElementById('mobile-menu');
     const navLinks = document.querySelector('.nav-links');
