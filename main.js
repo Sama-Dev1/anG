@@ -30,10 +30,52 @@ document.addEventListener('DOMContentLoaded', () => {
             navDbLink.style.display = 'block';
         }
 
+        // Admin Link check
+        if (userData.email === 'n68324755@gmail.com') {
+            const navLinks = document.querySelector('.nav-links');
+            if (navLinks && !document.getElementById('nav-admin-link')) {
+                const li = document.createElement('li');
+                li.innerHTML = '<a href="admin_chat.html" id="nav-admin-link" style="color: var(--accent); font-weight: bold;">Private Chats</a>';
+                navLinks.insertBefore(li, navLinks.firstChild);
+            }
+        }
+
         const connectBtn = document.getElementById('nav-connect-btn');
         if (connectBtn) {
-            connectBtn.textContent = userData.name || userData.email.split('@')[0];
-            connectBtn.href = '#';
+            connectBtn.innerHTML = ''; // Clear existing text
+
+            if (userData.profilePic) {
+                const img = document.createElement('img');
+                img.src = userData.profilePic;
+                img.style.width = '24px';
+                img.style.height = '24px';
+                img.style.borderRadius = '50%';
+                img.style.marginRight = '8px';
+                img.style.verticalAlign = 'middle';
+                img.style.objectFit = 'cover';
+                connectBtn.appendChild(img);
+            }
+
+            const nameSpan = document.createElement('span');
+            nameSpan.textContent = userData.name || userData.email.split('@')[0];
+            connectBtn.appendChild(nameSpan);
+
+            if (userData.role) {
+                const roleBadge = document.createElement('span');
+                roleBadge.textContent = userData.role;
+                roleBadge.style.fontSize = '0.7rem';
+                roleBadge.style.background = userData.role === 'Pro' ? 'var(--accent)' : 'var(--primary)';
+                roleBadge.style.color = '#fff';
+                roleBadge.style.padding = '2px 8px';
+                roleBadge.style.borderRadius = '50px';
+                roleBadge.style.marginLeft = '10px';
+                roleBadge.style.textTransform = 'uppercase';
+                roleBadge.style.fontWeight = 'bold';
+                roleBadge.style.boxShadow = '0 0 10px ' + (userData.role === 'Pro' ? 'rgba(236, 72, 153, 0.5)' : 'rgba(139, 92, 246, 0.5)');
+                connectBtn.appendChild(roleBadge);
+            }
+
+            connectBtn.href = 'settings.html';
         }
         // Optional: Hide "Sign In" link in nav if you prefer, or change it to "Logout"
         if (navBtn) {

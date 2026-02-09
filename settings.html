@@ -34,29 +34,124 @@
 
     <main class="auth-wrapper">
         <div class="auth-container fade-in-up">
-            <div class="auth-header">
-                <div class="auth-tab active" style="text-align: center; cursor: default;">Account Settings</div>
+            <div class="auth-header" id="settings-tabs">
+                <div class="auth-tab active" data-tab="profile">Profile</div>
+                <div class="auth-tab" data-tab="payment">Payment</div>
             </div>
 
             <div class="auth-body">
-                <div class="auth-form active" style="display: block;">
-                    <h2>Your Profile</h2>
-                    <p class="auth-desc">Manage your personal information.</p>
+                <!-- Profile Tab Content -->
+                <div id="tab-profile" class="auth-form active">
+                    <div class="profile-pic-section" style="text-align: center; margin-bottom: 2rem;">
+                        <div class="profile-pic-container"
+                            style="position: relative; width: 100px; height: 100px; margin: 0 auto 1rem; border-radius: 50%; border: 2px solid var(--primary); overflow: hidden; background: var(--glass-bg); display: flex; align-items: center; justify-content: center;">
+                            <img id="profile-preview"
+                                src="https://ui-avatars.com/api/?name=User&background=random&color=fff&size=100"
+                                alt="Profile" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                            <span id="profile-placeholder" style="font-size: 2.5rem;">👤</span>
+                        </div>
+                        <label for="profile-upload" class="btn btn-secondary"
+                            style="padding: 0.5rem 1rem; font-size: 0.8rem; display: inline-block;">
+                            Change Photo
+                        </label>
+                        <input type="file" id="profile-upload" accept="image/*" style="display: none;">
+                    </div>
 
                     <div class="input-group">
-                        <input type="text" id="setting-name" readonly placeholder="" />
+                        <input type="text" id="setting-name" placeholder="" />
                         <label for="setting-name">Name</label>
                     </div>
 
                     <div class="input-group">
-                        <input type="email" id="setting-email" readonly placeholder=" " />
+                        <input type="email" id="setting-email" placeholder=" " />
                         <label for="setting-email">Email Address</label>
                     </div>
 
-                    <div style="margin-top: 2rem;">
+                    <div id="settings-message"
+                        style="margin-top: 1rem; font-size: 0.9rem; text-align: center; min-height: 1.4em;"></div>
+
+                    <div style="margin-top: 1rem;">
+                        <button id="save-settings-btn" class="btn btn-primary btn-full">
+                            Save Changes
+                        </button>
+                    </div>
+
+                    <div style="margin-top: 1rem;">
                         <button id="logout-btn" class="btn btn-primary btn-full"
                             style="background: transparent; border: 1px solid #ff5f56; color: #ff5f56;">
                             Sign Out
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Payment Tab Content -->
+                <div id="tab-payment" class="auth-form" style="display: none;">
+                    <h2>Electronic Payment</h2>
+                    <p class="auth-desc">Choose a plan or enter a custom amount.</p>
+
+                    <!-- Plan Selection -->
+                    <div class="plan-cards" style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+                        <div class="glass-card plan-card" data-plan="alpha" data-amount="25"
+                            style="flex: 1; padding: 1rem; text-align: center; cursor: pointer; border: 1px solid var(--glass-border); transition: all 0.3s ease;">
+                            <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem;">Sama Alpha</h4>
+                            <div style="font-size: 1.2rem; font-weight: 700; color: var(--secondary);">$25</div>
+                        </div>
+                        <div class="glass-card plan-card" data-plan="pro" data-amount="80"
+                            style="flex: 1; padding: 1rem; text-align: center; cursor: pointer; border: 1px solid var(--glass-border); transition: all 0.3s ease;">
+                            <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem;">Sama Pro</h4>
+                            <div style="font-size: 1.2rem; font-weight: 700; color: var(--accent);">$80</div>
+                        </div>
+                    </div>
+
+                    <div class="payment-selection" style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+                        <button class="btn btn-secondary payment-method-btn active" data-method="card"
+                            style="flex: 1; font-size: 0.8rem; padding: 1rem 0.5rem;">
+                            💳 Credit Card
+                        </button>
+                        <button class="btn btn-secondary payment-method-btn" data-method="paypal"
+                            style="flex: 1; font-size: 0.8rem; padding: 1rem 0.5rem;">
+                            🅿️ PayPal
+                        </button>
+                    </div>
+
+                    <!-- Credit Card Form -->
+                    <div id="payment-card-form">
+                        <div class="input-group">
+                            <input type="text" id="card-num" placeholder=" " maxlength="19" />
+                            <label for="card-num">Card Number (XXXX XXXX XXXX XXXX)</label>
+                        </div>
+                        <div style="display: flex; gap: 1rem;">
+                            <div class="input-group" style="flex: 2;">
+                                <input type="text" id="card-expiry" placeholder=" " maxlength="5" />
+                                <label for="card-expiry">Expiry (MM/YY)</label>
+                            </div>
+                            <div class="input-group" style="flex: 1;">
+                                <input type="text" id="card-cvv" placeholder=" " maxlength="3" />
+                                <label for="card-cvv">CVV</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PayPal Form -->
+                    <div id="payment-paypal-form" style="display: none;">
+                        <div class="input-group">
+                            <input type="email" id="paypal-email" placeholder=" " />
+                            <label for="paypal-email">PayPal Email Address</label>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="number" id="payment-amount" placeholder=" " value="25" />
+                        <label for="payment-amount">Amount ($)</label>
+                    </div>
+
+                    <div id="payment-message"
+                        style="margin-top: 1rem; font-size: 0.9rem; text-align: center; min-height: 1.4em;"></div>
+
+                    <div style="margin-top: 1rem;">
+                        <button id="pay-now-btn" class="btn btn-primary btn-full"
+                            style="background: linear-gradient(to right, var(--primary), var(--secondary)); border: none;">
+                            Send Payment
                         </button>
                     </div>
                 </div>
@@ -79,9 +174,172 @@
 
             const nameField = document.getElementById('setting-name');
             const emailField = document.getElementById('setting-email');
+            const saveBtn = document.getElementById('save-settings-btn');
+            const messageDiv = document.getElementById('settings-message');
+
+            const profilePreview = document.getElementById('profile-preview');
+            const profilePlaceholder = document.getElementById('profile-placeholder');
+            const profileUpload = document.getElementById('profile-upload');
 
             if (nameField) nameField.value = userData.name || '';
             if (emailField) emailField.value = userData.email || '';
+
+            if (userData.profilePic) {
+                profilePreview.src = userData.profilePic;
+                profilePreview.style.display = 'block';
+                profilePlaceholder.style.display = 'none';
+            }
+
+            // Handle Profile Picture Upload
+            profileUpload.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const base64Image = event.target.result;
+                        profilePreview.src = base64Image;
+                        profilePreview.style.display = 'block';
+                        profilePlaceholder.style.display = 'none';
+                        userData._tempPic = base64Image; // Store temporarily
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Handle Save Changes
+            if (saveBtn) {
+                saveBtn.addEventListener('click', () => {
+                    const newName = nameField.value.trim();
+                    const newEmail = emailField.value.trim();
+
+                    if (!newEmail) {
+                        messageDiv.textContent = 'Email cannot be empty.';
+                        messageDiv.style.color = '#ff5f56';
+                        return;
+                    }
+
+                    // Update user data
+                    userData.name = newName;
+                    userData.email = newEmail;
+
+                    if (userData._tempPic) {
+                        userData.profilePic = userData._tempPic;
+                        delete userData._tempPic;
+                    }
+
+                    localStorage.setItem('sama_user', JSON.stringify(userData));
+
+                    // Success Feedback
+                    saveBtn.textContent = 'Saved!';
+                    messageDiv.textContent = 'Settings updated successfully.';
+                    messageDiv.style.color = 'var(--secondary)';
+
+                    setTimeout(() => {
+                        saveBtn.textContent = 'Save Changes';
+                    }, 2000);
+                });
+            }
+
+            // Tab Switching Logic
+            const tabs = document.querySelectorAll('.auth-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = tab.getAttribute('data-tab');
+
+                    // Update tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    // Update content
+                    document.getElementById('tab-profile').style.display = target === 'profile' ? 'block' : 'none';
+                    document.getElementById('tab-payment').style.display = target === 'payment' ? 'block' : 'none';
+                });
+            });
+
+            // Plan Selection Logic
+            const planCards = document.querySelectorAll('.plan-card');
+            const amountInput = document.getElementById('payment-amount');
+
+            planCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const amount = card.getAttribute('data-amount');
+                    const plan = card.getAttribute('data-plan');
+
+                    // Update field
+                    amountInput.value = amount;
+
+                    // Visual state
+                    planCards.forEach(c => {
+                        c.style.borderColor = 'var(--glass-border)';
+                        c.style.background = 'var(--glass-bg)';
+                    });
+                    card.style.borderColor = plan === 'pro' ? 'var(--accent)' : 'var(--secondary)';
+                    card.style.background = plan === 'pro' ? 'rgba(236, 72, 153, 0.1)' : 'rgba(6, 182, 212, 0.1)';
+                });
+            });
+
+            // Payment Method Toggle
+            const methodBtns = document.querySelectorAll('.payment-method-btn');
+            methodBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const method = btn.getAttribute('data-method');
+                    methodBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    document.getElementById('payment-card-form').style.display = method === 'card' ? 'block' : 'none';
+                    document.getElementById('payment-paypal-form').style.display = method === 'paypal' ? 'block' : 'none';
+                });
+            });
+
+            // Handle Payment Simulation
+            const payBtn = document.getElementById('pay-now-btn');
+            const payMessage = document.getElementById('payment-message');
+
+            if (payBtn) {
+                payBtn.addEventListener('click', () => {
+                    const amount = document.getElementById('payment-amount').value;
+                    if (!amount || amount <= 0) {
+                        payMessage.textContent = 'Please enter a valid amount.';
+                        payMessage.style.color = '#ff5f56';
+                        return;
+                    }
+
+                    payBtn.textContent = 'Processing...';
+                    payBtn.disabled = true;
+
+                    // Simulate payment to Saif (n68324755@gmail.com)
+                    setTimeout(() => {
+                        console.log(`[Payment System] Processing transaction of $${amount} to recipient: n68324755@gmail.com`);
+
+                        let planUnlocked = "";
+                        if (amount == 25) {
+                            userData.role = "Alpha";
+                            planUnlocked = "Sama Alpha";
+                        } else if (amount == 80) {
+                            userData.role = "Pro";
+                            planUnlocked = "Sama Pro";
+                        } else {
+                            userData.role = "Contributor"; // Custom amount
+                            planUnlocked = "Contributor Status";
+                        }
+
+                        // Save the new role
+                        localStorage.setItem('sama_user', JSON.stringify(userData));
+
+                        payBtn.textContent = 'Success!';
+                        payBtn.style.background = 'var(--secondary)';
+                        payMessage.textContent = `Transaction of $${amount} successful. ${planUnlocked} Unlocked!`;
+                        payMessage.style.color = 'var(--secondary)';
+
+                        setTimeout(() => {
+                            payBtn.textContent = 'Send Payment';
+                            payBtn.disabled = false;
+                            payBtn.style.background = 'linear-gradient(to right, var(--primary), var(--secondary))';
+                            document.getElementById('payment-amount').value = '';
+                        }, 3000);
+                    }, 2000);
+                });
+            }
 
             // Handle Logout
             const logoutBtn = document.getElementById('logout-btn');
