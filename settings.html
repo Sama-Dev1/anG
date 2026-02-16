@@ -91,15 +91,25 @@
 
                     <!-- Plan Selection -->
                     <div class="plan-cards" style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+                        <div class="glass-card plan-card" data-plan="free" data-amount="0"
+                            style="flex: 1; padding: 1rem; text-align: center; cursor: pointer; border: 1px solid var(--glass-border); transition: all 0.3s ease;">
+                            <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem;">Sama Free</h4>
+                            <div style="font-size: 1.2rem; font-weight: 700; color: var(--text-muted);">$0</div>
+                        </div>
                         <div class="glass-card plan-card" data-plan="alpha" data-amount="25"
                             style="flex: 1; padding: 1rem; text-align: center; cursor: pointer; border: 1px solid var(--glass-border); transition: all 0.3s ease;">
                             <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem;">Sama Alpha</h4>
                             <div style="font-size: 1.2rem; font-weight: 700; color: var(--secondary);">$25</div>
                         </div>
-                        <div class="glass-card plan-card" data-plan="pro" data-amount="80"
+                        <div class="glass-card plan-card" data-plan="V.I.P" data-amount="75"
                             style="flex: 1; padding: 1rem; text-align: center; cursor: pointer; border: 1px solid var(--glass-border); transition: all 0.3s ease;">
-                            <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem;">Sama Pro</h4>
-                            <div style="font-size: 1.2rem; font-weight: 700; color: var(--accent);">$80</div>
+                            <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem;">Sama V.I.P ($75)</h4>
+                            <div style="font-size: 1.2rem; font-weight: 700; color: var(--accent);">$75</div>
+                        </div>
+                        <div class="glass-card plan-card" data-plan="Premium" data-amount="150"
+                            style="flex: 1; padding: 1rem; text-align: center; cursor: pointer; border: 1px solid var(--glass-border); transition: all 0.3s ease;">
+                            <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem;">Sama Premium ($150)</h4>
+                            <div style="font-size: 1.2rem; font-weight: 700; color: var(--accent);">$150</div>
                         </div>
                     </div>
 
@@ -229,6 +239,14 @@
 
                     localStorage.setItem('sama_user', JSON.stringify(userData));
 
+                    // Sync name change to all chats for Admin visibility
+                    const allChats = JSON.parse(localStorage.getItem('sama_all_chats') || '{}');
+                    const userKey = userData.email;
+                    if (allChats[userKey]) {
+                        allChats[userKey].name = newName;
+                        localStorage.setItem('sama_all_chats', JSON.stringify(allChats));
+                    }
+
                     // Success Feedback
                     saveBtn.textContent = 'Saved!';
                     messageDiv.textContent = 'Settings updated successfully.';
@@ -273,8 +291,16 @@
                         c.style.borderColor = 'var(--glass-border)';
                         c.style.background = 'var(--glass-bg)';
                     });
-                    card.style.borderColor = plan === 'pro' ? 'var(--accent)' : 'var(--secondary)';
-                    card.style.background = plan === 'pro' ? 'rgba(236, 72, 153, 0.1)' : 'rgba(6, 182, 212, 0.1)';
+                    card.style.borderColor = (plan === 'V.I.P' || plan === 'Premium' || plan === 'pro') ? 'var(--accent)' : (plan === 'alpha' ? 'var(--secondary)' : 'var(--text-muted)');
+                    card.style.background = (plan === 'V.I.P' || plan === 'Premium' || plan === 'pro') ? 'rgba(236, 72, 153, 0.1)' : (plan === 'alpha' ? 'rgba(6, 182, 212, 0.1)' : 'rgba(255, 255, 255, 0.05)');
+
+                    // Update button text for free plan
+                    const payBtn = document.getElementById('pay-now-btn');
+                    if (plan === 'free') {
+                        payBtn.textContent = 'Activate Free Plan';
+                    } else {
+                        payBtn.textContent = 'Send Payment';
+                    }
                 });
             });
 
@@ -295,13 +321,91 @@
             const payBtn = document.getElementById('pay-now-btn');
             const payMessage = document.getElementById('payment-message');
 
+            // Check for existing Plan timers on load
+            let planIntervals = {};
+
+            const updateTimerDisplay = (expiry, planType) => {
+                const now = new Date().getTime();
+                const distance = expiry - now;
+
+                const specificCard = document.querySelector(`.plan-card[data-plan="${planType}"]`);
+                if (!specificCard) return;
+
+                if (distance < 0) {
+                    if (planIntervals[planType]) clearInterval(planIntervals[planType]);
+                    let currentData = JSON.parse(localStorage.getItem('sama_user') || '{}');
+                    if (currentData.activePlans) {
+                        delete currentData.activePlans[planType];
+                        localStorage.setItem('sama_user', JSON.stringify(currentData));
+                    }
+
+                    const timerDiv = specificCard.querySelector('.plan-timer');
+                    if (timerDiv) timerDiv.textContent = 'Expired';
+                    specificCard.style.pointerEvents = 'auto';
+                    specificCard.style.opacity = '1';
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+                let timerDiv = specificCard.querySelector('.plan-timer');
+                if (!timerDiv) {
+                    timerDiv = document.createElement('div');
+                    timerDiv.className = 'plan-timer';
+                    timerDiv.style.fontSize = '0.9rem';
+                    timerDiv.style.fontWeight = '600';
+                    timerDiv.style.marginTop = '0.5rem';
+                    timerDiv.style.color = 'var(--text-muted)';
+                    specificCard.appendChild(timerDiv);
+                }
+
+                timerDiv.textContent = `${days}d ${hours}h ${minutes}m`;
+                specificCard.style.pointerEvents = 'none';
+                specificCard.style.opacity = '0.8';
+            };
+
+            const checkActivePlans = () => {
+                const metadata = JSON.parse(localStorage.getItem('sama_user') || '{}');
+                if (metadata.activePlans) {
+                    Object.keys(metadata.activePlans).forEach(planType => {
+                        const expiry = new Date(metadata.activePlans[planType]).getTime();
+                        if (new Date().getTime() < expiry) {
+                            if (planIntervals[planType]) clearInterval(planIntervals[planType]);
+                            updateTimerDisplay(expiry, planType);
+                            planIntervals[planType] = setInterval(() => updateTimerDisplay(expiry, planType), 1000);
+                        } else {
+                            delete metadata.activePlans[planType];
+                            localStorage.setItem('sama_user', JSON.stringify(metadata));
+                        }
+                    });
+                }
+            };
+
+            checkActivePlans();
+
             if (payBtn) {
                 payBtn.addEventListener('click', () => {
                     const amount = document.getElementById('payment-amount').value;
-                    if (!amount || amount <= 0) {
+                    const isFreePlan = (amount == 0);
+
+                    if (amount === '' || amount < 0) {
                         payMessage.textContent = 'Please enter a valid amount.';
                         payMessage.style.color = '#ff5f56';
                         return;
+                    }
+
+                    if (isFreePlan) {
+                        // Check if already used or currently active
+                        if (userData.freePlanExpiry) {
+                            const now = new Date().getTime();
+                            if (now > new Date(userData.freePlanExpiry).getTime()) {
+                                // Expired, should not be clickable based on requirement, but safety check
+                                payMessage.textContent = 'Free plan trial has expired.';
+                                return;
+                            }
+                        }
                     }
 
                     payBtn.textContent = 'Processing...';
@@ -312,24 +416,54 @@
                         console.log(`[Payment System] Processing transaction of $${amount} to recipient: n68324755@gmail.com`);
 
                         let planUnlocked = "";
+                        const expiryDate = new Date();
+                        let newRole = "";
+
                         if (amount == 25) {
-                            userData.role = "Alpha";
+                            newRole = "Alpha";
                             planUnlocked = "Sama Alpha";
-                        } else if (amount == 80) {
-                            userData.role = "Pro";
-                            planUnlocked = "Sama Pro";
+                            expiryDate.setDate(expiryDate.getDate() + 30);
+                        } else if (amount == 75) {
+                            newRole = "V.I.P";
+                            planUnlocked = "Sama V.I.P";
+                            expiryDate.setDate(expiryDate.getDate() + 180);
+                        } else if (amount == 150) {
+                            newRole = "Premium";
+                            planUnlocked = "Sama Premium";
+                            expiryDate.setDate(expiryDate.getDate() + 365);
+                        } else if (amount == 0) {
+                            newRole = "Free";
+                            planUnlocked = "Free Plan (7 Days)";
+                            expiryDate.setDate(expiryDate.getDate() + 7);
                         } else {
-                            userData.role = "Contributor"; // Custom amount
+                            newRole = "Contributor";
                             planUnlocked = "Contributor Status";
+                            expiryDate.setDate(expiryDate.getDate() + 30);
                         }
 
-                        // Save the new role
+                        if (!userData.activePlans) userData.activePlans = {};
+                        userData.activePlans[newRole] = expiryDate.toISOString();
+                        // For backward compatibility and single role display
+                        userData.role = newRole;
+
+                        // Save user data
                         localStorage.setItem('sama_user', JSON.stringify(userData));
+
+                        // Sync role to all chats for Admin visibility
+                        const allChats = JSON.parse(localStorage.getItem('sama_all_chats') || '{}');
+                        const userKey = userData.email;
+                        if (allChats[userKey]) {
+                            allChats[userKey].role = userData.role;
+                            localStorage.setItem('sama_all_chats', JSON.stringify(allChats));
+                        }
 
                         payBtn.textContent = 'Success!';
                         payBtn.style.background = 'var(--secondary)';
                         payMessage.textContent = `Transaction of $${amount} successful. ${planUnlocked} Unlocked!`;
                         payMessage.style.color = 'var(--secondary)';
+
+                        // Update UI immediately
+                        checkActivePlans();
 
                         setTimeout(() => {
                             payBtn.textContent = 'Send Payment';

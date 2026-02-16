@@ -85,6 +85,8 @@ const label = {
             </div>
         </section>
 
+        </section>
+
         <section id="work" class="work-section" style="padding: 100px 5%;">
             <h2 class="section-title">Selected Work</h2>
             <div class="grid">
@@ -97,14 +99,20 @@ const label = {
                 <div class="glass-card">
                     <h3>Sama alpha ($25)</h3>
                     <p>For a month.</p>
+                    <a href="settings.html" class="btn btn-secondary"
+                        style="margin-top: 1rem; width: 100%; display: block; text-align: center;">Pay</a>
                 </div>
                 <div class="glass-card">
                     <h3>Sama V.I.P ($75)</h3>
                     <p>For a 6 month.</p>
+                    <a href="settings.html" class="btn btn-secondary"
+                        style="margin-top: 1rem; width: 100%; display: block; text-align: center;">Pay</a>
                 </div>
                 <div class="glass-card">
                     <h3>Sama Premium ($150)</h3>
                     <p>For a year.</p>
+                    <a href="settings.html" class="btn btn-secondary"
+                        style="margin-top: 1rem; width: 100%; display: block; text-align: center;">Pay</a>
                 </div>
             </div>
         </section>
@@ -144,6 +152,98 @@ const label = {
     </footer>
 
     <script src="main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('sama_user');
+
+            // Logic for all plan buttons and timers in Work section
+            const updateAllPlanStates = () => {
+                if (!savedUser) return;
+
+                const userData = JSON.parse(localStorage.getItem('sama_user') || '{}');
+                const activePlans = userData.activePlans || {};
+                const cards = document.querySelectorAll('.work-section .glass-card');
+
+                const setupTimerOnCard = (cardIndex, planName) => {
+                    const card = cards[cardIndex];
+                    if (!card) return;
+
+                    const actionBtn = card.querySelector('.btn');
+                    let timerDisplay = card.querySelector('.plan-timer-display');
+
+                    const ensureTimerDisplay = () => {
+                        if (!timerDisplay) {
+                            timerDisplay = document.createElement('div');
+                            timerDisplay.className = 'plan-timer-display';
+                            timerDisplay.style.fontSize = '1.2rem';
+                            timerDisplay.style.fontWeight = 'bold';
+                            timerDisplay.style.marginBottom = '1rem';
+                            timerDisplay.style.color = 'var(--text-main)';
+                            timerDisplay.style.textAlign = 'center';
+                            card.insertBefore(timerDisplay, actionBtn);
+                        }
+                    };
+
+                    const planExpiry = activePlans[planName];
+                    if (planExpiry) {
+                        const expiry = new Date(planExpiry).getTime();
+                        const updateTimer = () => {
+                            const now = new Date().getTime();
+                            const distance = expiry - now;
+
+                            if (distance < 0) {
+                                // Plan expired
+                                if (timerDisplay) timerDisplay.textContent = 'Expired';
+                                actionBtn.textContent = 'Upgrade';
+                                actionBtn.href = 'settings.html';
+                                actionBtn.style.background = 'var(--accent)';
+                                return;
+                            }
+
+                            ensureTimerDisplay();
+                            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                            timerDisplay.textContent = `${days}d ${hours}h ${minutes}m`;
+
+                            actionBtn.textContent = `Chat ${planName}`;
+                            actionBtn.href = 'chat.html';
+                            actionBtn.style.background = '';
+                        };
+                        updateTimer();
+                        setInterval(updateTimer, 1000);
+                    }
+                };
+
+                // Check all possible plans and show timers for all that are active
+                setupTimerOnCard(0, 'Free');
+                setupTimerOnCard(1, 'Alpha');
+                setupTimerOnCard(2, 'V.I.P');
+                setupTimerOnCard(3, 'Premium');
+
+                // Handle initial click for Free Plan if no active plan of that type
+                const freeBtn = cards[0]?.querySelector('.btn');
+                if (freeBtn && !activePlans['Free']) {
+                    freeBtn.addEventListener('click', (e) => {
+                        const latest = JSON.parse(localStorage.getItem('sama_user') || '{}');
+                        if (!latest.activePlans) latest.activePlans = {};
+                        if (!latest.activePlans['Free']) {
+                            e.preventDefault();
+                            const exp = new Date();
+                            exp.setDate(exp.getDate() + 7);
+                            latest.activePlans['Free'] = exp.toISOString();
+                            latest.role = 'Free';
+                            localStorage.setItem('sama_user', JSON.stringify(latest));
+                            // ... (admin sync logic if needed) ...
+                            window.location.href = 'chat.html';
+                        }
+                    });
+                }
+            };
+
+            updateAllPlanStates();
+        });
+    </script>
 </body>
 
 </html>

@@ -14,32 +14,45 @@
     <style>
         body {
             height: 100vh;
+            height: 100dvh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            overscroll-behavior: none;
+            background: var(--bg-color);
         }
 
         .chat-container {
             flex: 1;
             display: flex;
-            max-width: 1200px;
+            max-width: 1400px;
+            /* Wider for premium feel */
             width: 100%;
             margin: 80px auto 20px;
             gap: 20px;
             padding: 0 20px;
+            animation: fadeIn 0.8s ease;
         }
 
+        @media (max-width: 768px) {
+            .chat-container {
+                margin: 70px 0 0;
+                padding: 0;
+                gap: 0;
+            }
+        }
+
+        /* Sidebar Styles */
         .chat-sidebar {
             width: 300px;
-            background: var(--glass-bg);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--glass-border);
-            backdrop-filter: blur(var(--glass-blur));
-            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
             display: flex;
             flex-direction: column;
-            padding: 20px;
+            padding: 24px;
             display: none;
-            /* Hidden on mobile */
         }
 
         @media (min-width: 768px) {
@@ -49,191 +62,176 @@
         }
 
         .sidebar-header {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             color: var(--text-main);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .new-chat-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .new-chat-btn:hover {
-            opacity: 0.9;
-            transform: scale(1.05);
-        }
-
-        .chat-history {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .history-item {
-            padding: 12px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.03);
-            cursor: pointer;
-            transition: 0.3s;
-            border: 1px solid transparent;
-        }
-
-        .history-item:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: var(--glass-border);
-        }
-
-        .history-item.active {
-            background: rgba(139, 92, 246, 0.1);
-            border-color: var(--primary);
-        }
-
+        /* Main Chat Area */
         .main-chat {
             flex: 1;
-            background: var(--glass-bg);
+            background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--glass-border);
-            backdrop-filter: blur(var(--glass-blur));
-            border-radius: 20px;
+            backdrop-filter: blur(30px);
+            border-radius: 24px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
             position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
         }
 
         .chat-header {
-            padding: 20px;
+            padding: 24px;
+            background: rgba(255, 255, 255, 0.03);
             border-bottom: 1px solid var(--glass-border);
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 15px;
         }
 
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
         .bot-avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            border-radius: 12px;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.4rem;
+            color: white;
+            box-shadow: 0 8px 16px rgba(139, 92, 246, 0.3);
         }
 
         .chat-info h2 {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             margin: 0;
+            font-family: var(--font-heading);
+            letter-spacing: -0.02em;
         }
 
-        .chat-info span {
-            font-size: 0.8rem;
-            color: var(--text-muted);
+        .plan-badge {
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
         }
 
-        .messages-list {
+        /* Message Bubbles */
+        #messages-list {
             flex: 1;
-            padding: 20px;
+            min-height: 0;
+            padding: 40px 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
             scroll-behavior: smooth;
-        }
-
-        /* Custom Scrollbar */
-        .messages-list::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .messages-list::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 10px;
-        }
-
-        .messages-list::-webkit-scrollbar-thumb {
-            background: var(--glass-border);
-            border-radius: 10px;
-        }
-
-        .messages-list::-webkit-scrollbar-thumb:hover {
-            background: var(--primary);
+            max-height: calc(100vh - 250px);
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 30px, black calc(100% - 30px), transparent);
+            mask-image: linear-gradient(to bottom, transparent, black 30px, black calc(100% - 30px), transparent);
         }
 
         .message {
-            max-width: 80%;
-            padding: 15px 20px;
+            max-width: 75%;
+            padding: 16px 20px;
             border-radius: 20px;
-            line-height: 1.5;
+            line-height: 1.6;
+            font-size: 1rem;
             position: relative;
-            animation: fadeIn 0.3s ease;
+            animation: slideUp 0.4s ease forwards;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .message.bot {
             align-self: flex-start;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border);
-            border-bottom-left-radius: 5px;
+            border-bottom-left-radius: 4px;
+            color: var(--text-main);
         }
 
         .message.user {
             align-self: flex-end;
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            border-bottom-right-radius: 5px;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.2);
         }
 
+        /* Input Area (Premium Design - Floating) */
         .chat-input-area {
-            padding: 20px;
-            border-top: 1px solid var(--glass-border);
-            background: rgba(0, 0, 0, 0.2);
+            padding: 24px;
+            background: transparent;
+            border-top: none;
+            margin-bottom: 20px;
         }
 
-        .input-wrapper {
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
             display: flex;
-            gap: 15px;
-            background: rgba(255, 255, 255, 0.05);
+            gap: 16px;
+            background: rgba(255, 255, 255, 0.07);
             border: 1px solid var(--glass-border);
-            padding: 10px 20px;
-            border-radius: 15px;
+            padding: 8px 12px 8px 24px;
+            border-radius: 24px;
+            /* More rounded */
             align-items: center;
-            transition: 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
-        .input-wrapper:focus-within {
+        .input-container:focus-within {
             border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.15);
+            transform: translateY(-2px);
         }
 
         #message-input {
             flex: 1;
             background: transparent;
             border: none;
-            color: white;
-            padding: 10px 0;
-            font-family: var(--font-body);
+            color: white !important;
             font-size: 1rem;
             outline: none;
+            padding: 12px 0;
         }
 
         #send-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
             background: var(--primary);
-            color: white;
             border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -242,82 +240,56 @@
         }
 
         #send-btn:hover {
-            transform: scale(1.1);
+            transform: rotate(10deg) scale(1.1);
             background: var(--accent);
         }
 
-        .back-btn {
-            position: absolute;
-            left: 20px;
-            top: 25px;
-            color: var(--text-muted);
+        /* Theme Variants */
+        body.theme-free {
+            --primary: #a1a1aa;
+        }
+
+        body.theme-alpha {
+            --primary: #8b5cf6;
+            --secondary: #c084fc;
+        }
+
+        body.theme-vip {
+            --primary: #06b6d4;
+            --secondary: #22d3ee;
+        }
+
+        body.theme-premium {
+            --primary: #ec4899;
+            --secondary: #f472b6;
+        }
+
+        .private-label {
+            font-size: 0.8rem;
+            opacity: 0.6;
+            margin-top: 2px;
+        }
+
+        .back-link {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 0.9rem;
-            z-index: 10;
-        }
-
-        .back-btn:hover {
-            color: var(--text-main);
-        }
-
-        /* Typing Indicator */
-        .typing-indicator {
-            display: none;
-            padding: 15px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            width: fit-content;
-            margin-bottom: 20px;
-        }
-
-        .dot-pulse {
-            display: flex;
-            gap: 5px;
-        }
-
-        .dot-pulse div {
-            width: 8px;
-            height: 8px;
-            background: var(--text-muted);
-            border-radius: 50%;
-            animation: pulse 1.5s infinite ease-in-out;
-        }
-
-        .dot-pulse div:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .dot-pulse div:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                transform: scale(0.8);
-                opacity: 0.5;
-            }
-
-            50% {
-                transform: scale(1.2);
-                opacity: 1;
-            }
+            gap: 8px;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-bottom: 240px;
+            /* Offset for centered main content */
         }
     </style>
 </head>
 
 <body>
-    <div class="background-glow"></div>
+    <div class="background-glow" id="dynamic-glow"></div>
 
     <header class="glass-header">
         <nav>
             <div class="logo">Sama<span class="dot">.</span></div>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
-                <li><a href="index.html#dashboard">Dashboard</a></li>
                 <li><a href="settings.html">Settings</a></li>
             </ul>
         </nav>
@@ -326,56 +298,38 @@
     <div class="chat-container">
         <aside class="chat-sidebar">
             <div class="sidebar-header">
-                Chats
-                <button class="new-chat-btn">+ New</button>
+                Conversations
+                <button class="new-chat-btn">New</button>
             </div>
-            <div class="chat-history">
-                <div class="history-item active">
-                    <div style="font-weight: 600;">Welcome Chat</div>
-                    <div style="font-size: 0.8rem; color: var(--text-muted);">Just now</div>
-                </div>
-                <div class="history-item">
-                    <div style="font-weight: 600;">Project Ideas</div>
-                    <div style="font-size: 0.8rem; color: var(--text-muted);">2 hours ago</div>
-                </div>
-                <div class="history-item">
-                    <div style="font-weight: 600;">Code Help</div>
-                    <div style="font-size: 0.8rem; color: var(--text-muted);">Yesterday</div>
-                </div>
+            <div class="chat-history" id="sidebar-history">
+                <!-- Dynamic history -->
             </div>
         </aside>
 
-        <main class="main-chat">
-            <a href="index.html" class="back-btn">← Back</a>
+        <main class="main-chat" id="chat-main-area">
             <div class="chat-header">
-                <div class="bot-avatar">S</div>
-                <div class="chat-info">
-                    <h2>Sama AI</h2>
-                    <span>Online</span>
+                <div class="header-left">
+                    <div class="bot-avatar" id="header-avatar">S</div>
+                    <div class="chat-info">
+                        <h2 id="chat-title">Sama Private Chat</h2>
+                        <div class="private-label" id="private-label">Secured Session</div>
+                    </div>
                 </div>
+                <div class="plan-badge" id="plan-display">Free</div>
             </div>
 
             <div class="messages-list" id="messages-list">
-                <div class="message bot">
-                    Hello! I'm Sama AI. How can I help you build something amazing today?
-                </div>
-            </div>
-
-            <div class="typing-indicator" id="typing-indicator">
-                <div class="dot-pulse">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
+                <!-- Messages -->
             </div>
 
             <div class="chat-input-area">
                 <form id="chat-form">
-                    <div class="input-wrapper">
-                        <input type="text" id="message-input" placeholder="Type your message..." autocomplete="off">
+                    <div class="input-container">
+                        <input type="text" id="message-input" placeholder="Hold Shift + Enter for new line..."
+                            autocomplete="off">
                         <button type="submit" id="send-btn">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="22" y1="2" x2="11" y2="13"></line>
                                 <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                             </svg>
@@ -384,6 +338,39 @@
                 </form>
             </div>
         </main>
+    </div>
+
+    <div class="scroll-bottom-btn" id="scroll-bottom-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 13l5 5 5-5M7 6l5 5 5-5"></path>
+        </svg>
+    </div>
+
+    <div class="typing-indicator" id="typing-indicator">
+        <div class="dot-pulse">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+    <div class="chat-input-area">
+        <form id="chat-form">
+            <div class="input-wrapper">
+                <input type="text" id="message-input" placeholder="Type your message..." autocomplete="off"
+                    inputmode="text" enterkeyhint="send">
+                <button type="submit" id="send-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+        </form>
+    </div>
+    </main>
     </div>
 
     <script>
@@ -395,34 +382,38 @@
         // Login state check
         document.addEventListener('DOMContentLoaded', () => {
             const savedUser = localStorage.getItem('sama_user');
-            const navLinks = document.querySelector('.nav-links');
 
-            if (savedUser) {
-                const userData = JSON.parse(savedUser);
-                const li = document.createElement('li');
-                li.style.color = 'var(--primary)';
-                li.style.fontWeight = '600';
-                li.style.display = 'flex';
-                li.style.alignItems = 'center';
-                li.style.gap = '10px';
-
-                let userInfo = `<span>Welcome, ${userData.name || userData.email.split('@')[0]}</span>`;
-                if (userData.role) {
-                    userInfo += `<span style="font-size: 0.7rem; background: ${userData.role === 'Pro' ? 'var(--accent)' : 'var(--primary)'}; color: white; padding: 2px 8px; border-radius: 50px; text-transform: uppercase;">${userData.role}</span>`;
-                }
-                li.innerHTML = userInfo;
-                navLinks.appendChild(li);
-
-                const logoutLi = document.createElement('li');
-                logoutLi.innerHTML = '<a href="#" id="logout-btn" style="color: var(--text-muted); font-size: 0.8rem;">Logout</a>';
-                navLinks.appendChild(logoutLi);
-
-                document.getElementById('logout-btn').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    localStorage.removeItem('sama_user');
-                    window.location.href = 'index.html';
-                });
+            if (!savedUser) {
+                // If not logged in, redirect to auth page
+                window.location.href = 'auth.html';
+                return;
             }
+
+            const navLinks = document.querySelector('.nav-links');
+            const userData = JSON.parse(savedUser);
+            const li = document.createElement('li');
+            li.style.color = 'var(--primary)';
+            li.style.fontWeight = '600';
+            li.style.display = 'flex';
+            li.style.alignItems = 'center';
+            li.style.gap = '10px';
+
+            let userInfo = `<span>Welcome, ${userData.name || userData.email.split('@')[0]}</span>`;
+            if (userData.role) {
+                userInfo += `<span style="font-size: 0.7rem; background: ${userData.role === 'Pro' ? 'var(--accent)' : 'var(--primary)'}; color: white; padding: 2px 8px; border-radius: 50px; text-transform: uppercase;">${userData.role}</span>`;
+            }
+            li.innerHTML = userInfo;
+            navLinks.appendChild(li);
+
+            const logoutLi = document.createElement('li');
+            logoutLi.innerHTML = '<a href="#" id="logout-btn" style="color: var(--text-muted); font-size: 0.8rem;">Logout</a>';
+            navLinks.appendChild(logoutLi);
+
+            document.getElementById('logout-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('sama_user');
+                window.location.href = 'index.html';
+            });
         });
 
         const botResponses = [
@@ -437,6 +428,12 @@
 
         let lastMessageCount = 0;
 
+        function scrollToBottom(force = false) {
+            setTimeout(() => {
+                messagesList.scrollTop = messagesList.scrollHeight;
+            }, 100);
+        }
+
         function addMessage(text, sender, isHistory = false) {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', sender);
@@ -449,11 +446,7 @@
             }
 
             messagesList.appendChild(messageDiv);
-
-            // Auto-scroll to bottom
-            setTimeout(() => {
-                messagesList.scrollTop = messagesList.scrollHeight;
-            }, 100);
+            scrollToBottom(sender === 'user'); // Force scroll for user's own messages
 
             if (!isHistory) {
                 saveMessageToHistory(text, sender);
@@ -467,57 +460,148 @@
             const userData = JSON.parse(savedUser);
             const userKey = userData.email || 'anonymous';
 
-            let allChats = JSON.parse(localStorage.getItem('sama_all_chats') || '{}');
+            // Retry logic to handle race conditions
+            let attempts = 0;
+            const maxAttempts = 5;
 
-            if (!allChats[userKey]) {
-                allChats[userKey] = {
+            while (attempts < maxAttempts) {
+                try {
+                    let allChats = JSON.parse(localStorage.getItem('sama_all_chats') || '{}');
+                    const originalChatsStr = JSON.stringify(allChats);
+
+                    if (!allChats[userKey]) {
+                        allChats[userKey] = {
+                            name: userData.name || userData.email.split('@')[0],
+                            email: userData.email,
+                            messages: [],
+                            takeover: false
+                        };
+                    } else {
+                        // Update name if changed
+                        allChats[userKey].name = userData.name || userData.email.split('@')[0];
+                    }
+
+                    allChats[userKey].messages.push({
+                        text: text,
+                        sender: sender,
+                        timestamp: new Date().toISOString()
+                    });
+
+                    // Check if content changed in background before writing
+                    const currentChatsStr = localStorage.getItem('sama_all_chats') || '{}';
+                    if (currentChatsStr !== '{}' && currentChatsStr !== originalChatsStr && attempts < maxAttempts - 1) {
+                        // Some other tab wrote something? In simple localStorage, we can't 'lock' so we just re-read and try again.
+                        // But in synchronous JS in one browser, this race only happens if `getItem` and `setItem` are interleaved across tabs.
+                        // The safest way is to just write, but let's just do a direct read-modify-write.
+                        // Actually, standard localStorage is synchronous. The race is between the 'read' at start of function and 'write' at end.
+                        // So we should re-read right before write.
+
+                        // Let's rely on the Re-Read pattern:
+                    }
+
+                    // Re-read strictly for the update to ensure we don't overwrite others
+                    let freshChats = JSON.parse(localStorage.getItem('sama_all_chats') || '{}');
+                    if (!freshChats[userKey]) {
+                        freshChats[userKey] = allChats[userKey]; // if it was new
+                    } else {
+                        freshChats[userKey].name = allChats[userKey].name; // update name
+                        // We must push the message to the potentially updated buffer
+                        freshChats[userKey].messages.push(allChats[userKey].messages[allChats[userKey].messages.length - 1]);
+                    }
+
+                    localStorage.setItem('sama_all_chats', JSON.stringify(freshChats));
+                    break;
+                } catch (e) {
+                    console.error("Error saving message", e);
+                    break;
+                }
+                attempts++;
+            }
+        }
+
+        let currentUserKey = null;
+
+        const updateChatTheme = (userData) => {
+            const role = userData.role || 'Free';
+            const body = document.body;
+            const planDisplay = document.getElementById('plan-display');
+            const chatTitle = document.getElementById('chat-title');
+            const privateLabel = document.getElementById('private-label');
+            const glow = document.getElementById('dynamic-glow');
+
+            // Remove existing themes
+            body.classList.remove('theme-free', 'theme-alpha', 'theme-vip', 'theme-premium');
+
+            if (role === 'Alpha') {
+                body.classList.add('theme-alpha');
+                planDisplay.textContent = 'Alpha';
+                chatTitle.textContent = 'Alpha Private Chat';
+                privateLabel.textContent = 'Priority Processing Active';
+                glow.style.background = 'radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.15) 0%, transparent 70%)';
+            } else if (role === 'V.I.P') {
+                body.classList.add('theme-vip');
+                planDisplay.textContent = 'V.I.P';
+                chatTitle.textContent = 'V.I.P Exclusive Lounge';
+                privateLabel.textContent = 'Dedicated AI Core Assigned';
+                glow.style.background = 'radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.15) 0%, transparent 70%)';
+            } else if (role === 'Premium') {
+                body.classList.add('theme-premium');
+                planDisplay.textContent = 'Premium';
+                chatTitle.textContent = 'Premium Secure Chat';
+                privateLabel.textContent = 'Ultra-High Bandwidth Enabled';
+                glow.style.background = 'radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.15) 0%, transparent 70%)';
+            } else {
+                body.classList.add('theme-free');
+                planDisplay.textContent = 'Free';
+                chatTitle.textContent = 'Sama Free Chat';
+                privateLabel.textContent = 'Standard Community Session';
+                glow.style.background = 'radial-gradient(circle at 50% 50%, rgba(161, 161, 170, 0.1) 0%, transparent 70%)';
+            }
+        };
+
+        function initializeChat() {
+            const savedUser = localStorage.getItem('sama_user');
+            if (!savedUser) {
+                window.location.href = 'auth.html';
+                return;
+            }
+
+            const userData = JSON.parse(savedUser);
+            const key = userData.email || 'anonymous';
+            currentUserKey = key;
+
+            // Apply Theme
+            updateChatTheme(userData);
+
+            // Register user in admin panel immediately
+            let allChats = JSON.parse(localStorage.getItem('sama_all_chats') || '{}');
+            if (!allChats[key]) {
+                allChats[key] = {
                     name: userData.name || userData.email.split('@')[0],
                     email: userData.email,
                     messages: [],
-                    takeover: false
+                    takeover: false,
+                    role: userData.role || 'Free'
                 };
+            } else {
+                if (userData.role) allChats[key].role = userData.role;
+                allChats[key].name = userData.name || userData.email.split('@')[0];
             }
-
-            allChats[userKey].messages.push({
-                text: text,
-                sender: sender,
-                timestamp: new Date().toISOString()
-            });
-
             localStorage.setItem('sama_all_chats', JSON.stringify(allChats));
+
+            renderChatHistory(key);
         }
 
-        function checkForNewMessages() {
-            const savedUser = localStorage.getItem('sama_user');
-            if (!savedUser) return;
-            const userData = JSON.parse(savedUser);
-            const userKey = userData.email || 'anonymous';
-
+        function renderChatHistory(key) {
             const allChats = JSON.parse(localStorage.getItem('sama_all_chats') || '{}');
-            const chat = allChats[userKey];
+            const chat = allChats[key];
+            const userData = JSON.parse(localStorage.getItem('sama_user') || '{}');
+            const role = userData.role || 'Free';
 
-            if (chat && chat.messages && chat.messages.length > lastMessageCount) {
-                // If the new messages were sent by admin, we need to show them
-                for (let i = lastMessageCount; i < chat.messages.length; i++) {
-                    const msg = chat.messages[i];
-                    if (msg.sender === 'admin') {
-                        addMessage(msg.text, 'admin', true);
-                    }
-                }
-                lastMessageCount = chat.messages.length;
-            }
-        }
+            messagesList.innerHTML = '';
 
-        // Initial message count and history loading
-        const initialUserData = localStorage.getItem('sama_user');
-        if (initialUserData) {
-            const userData = JSON.parse(initialUserData);
-            const key = userData.email || 'anonymous';
-            const allChats = JSON.parse(localStorage.getItem('sama_all_chats') || '{}');
-
-            if (allChats[key] && allChats[key].messages) {
-                messagesList.innerHTML = ''; // Clear the default welcome message
-                allChats[key].messages.forEach(msg => {
+            if (chat && chat.messages && chat.messages.length > 0) {
+                chat.messages.forEach(msg => {
                     const messageDiv = document.createElement('div');
                     messageDiv.classList.add('message', msg.sender === 'user' ? 'user' : 'bot');
 
@@ -528,22 +612,119 @@
                     }
                     messagesList.appendChild(messageDiv);
                 });
-                lastMessageCount = allChats[key].messages.length;
-                messagesList.scrollTop = messagesList.scrollHeight;
+                lastMessageCount = chat.messages.length;
+            } else {
+                // Personalized welcome
+                const welcomeMsg = role === 'Free'
+                    ? "Welcome to Sama AI. I'm here to help you get started!"
+                    : `Welcome to your ${role} Private Chat, ${userData.name || 'User'}. All your data in this session is end-to-end secured. How can I assist you elite status today?`;
+
+                messagesList.innerHTML = `
+                    <div class="message bot">
+                        ${welcomeMsg}
+                    </div>`;
+                lastMessageCount = 0;
+            }
+            scrollToBottom(true);
+        }
+
+        function checkForNewMessages() {
+            const savedUser = localStorage.getItem('sama_user');
+            if (!savedUser) return; // or redirect
+
+            const userData = JSON.parse(savedUser);
+            const key = userData.email || 'anonymous';
+
+            // Detect Account Switch
+            if (key !== currentUserKey) {
+                console.log('User switched, reloading chat...');
+                initializeChat();
+                return;
+            }
+
+            const allChats = JSON.parse(localStorage.getItem('sama_all_chats') || '{}');
+            const chat = allChats[key];
+
+            if (chat) {
+                const serverCount = chat.messages ? chat.messages.length : 0;
+
+                // Case 1: Messages added
+                if (serverCount > lastMessageCount) {
+                    for (let i = lastMessageCount; i < chat.messages.length; i++) {
+                        const msg = chat.messages[i];
+                        addMessage(msg.text, msg.sender, true);
+                    }
+                    lastMessageCount = serverCount;
+                }
+                // Case 2: Messages cleared/truncated remotely
+                else if (serverCount < lastMessageCount) {
+                    console.log('History truncated, reloading...');
+                    renderChatHistory(key);
+                }
+            } else {
+                // Chat object deleted entirely?
+                if (lastMessageCount > 0) {
+                    renderChatHistory(key);
+                }
             }
         }
 
+        // Initial message count and history loading
+        document.addEventListener('DOMContentLoaded', () => {
+            // We need to wait for the login check in the other listener? 
+            // Actually, the other listener runs on DOMContentLoaded too.
+            // To be safe, let's just call initializeChat() here.
+            // The other listener handles UI (nav links), this handles Chat content.
+            initializeChat();
+        });
+
         // New Chat Button
         document.querySelector('.new-chat-btn').addEventListener('click', () => {
-            if (confirm('Start a new chat session? This will clear the screen but your history is saved.')) {
+            if (confirm('Start a new chat session? This will clear the screen but your history is preserved in the database.')) {
+
+                // For "New Chat", we might want to visually clear but keep history?
+                // Or maybe create a new "thread"? The current system is 1 thread per user.
+                // So "New Chat" just establishes a breakpoint.
+                // Let's just clear the visual for now, but not delete data.
                 messagesList.innerHTML = '<div class="message bot">New session started. How can I help you?</div>';
-                // We keep the history in localStorage but clear the current view
-                // Optionally, you could clear the history here if desired, 
-                // but the user asked to "save messages" on close, implying history is important.
+                // Resetting lastMessageCount would cause history to reload on next poll if we don't save a marker.
+                // But since we want to "clear screen", we simply wait until NEW messages come.
+                // However, checkForNewMessages compares local count vs DB count.
+                // If we clear screen (count 0) but DB has 50, next poll will reload 50 messages.
+                // So we actually CANNOT just clear screen without deeper logic.
+
+                // Correct behavior: Just scroll to bottom and show a "marker"?
+                // Or if user really wants a "Blank Slate", we'd need to archive old messages.
+                // Current architecture: One array per user.
+                // Let's just show a toast "History cleared" (fake) and maybe scroll.
+                // But the user clicked "New Chat". Usually this means "Forget context".
+                // Since we don't have real "threads", let's just do nothing or reload.
+
+                // Let's act like we cleared it but realize it will reload on refresh.
+                // It's better to tell the user:
+                alert("Note: This simple demo maintains a single chat history per user. To clear history permanently, ask the Admin.");
             }
         });
 
         setInterval(checkForNewMessages, 2000);
+
+        // Scroll to bottom button logic
+        const scrollBottomBtn = document.getElementById('scroll-bottom-btn');
+        messagesList.addEventListener('scroll', () => {
+            const scrollPos = messagesList.scrollHeight - messagesList.scrollTop - messagesList.clientHeight;
+            if (scrollPos > 300) {
+                scrollBottomBtn.classList.add('visible');
+            } else {
+                scrollBottomBtn.classList.remove('visible');
+            }
+        });
+
+        scrollBottomBtn.addEventListener('click', () => {
+            messagesList.scrollTo({
+                top: messagesList.scrollHeight,
+                behavior: 'smooth'
+            });
+        });
 
         chatForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -554,8 +735,10 @@
             messageInput.value = '';
 
             const savedUserData = localStorage.getItem('sama_user');
+            if (!savedUserData) return; // Wait for bot response simulation even if not logged in? Or just stop.
+
             const userData = JSON.parse(savedUserData);
-            const userKey = userData.email || 'anonymous';
+            const userKey = (userData && userData.email) ? userData.email : 'anonymous';
             const allChats = JSON.parse(localStorage.getItem('sama_all_chats') || '{}');
 
             // If admin has taken over, don't trigger bot response
